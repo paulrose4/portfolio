@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Agent — Blog Generation Demo</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: #080c14; color: #e2e8f0; line-height: 1.6;
+}
+.container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+
+.hero {
+  text-align: center; margin-bottom: 40px; padding: 48px 40px;
+  background: linear-gradient(135deg, #0a1a2e 0%, #13243e 100%);
+  border-radius: 24px; border: 1px solid #2d4a7a;
+}
+.hero h1 { font-size: 2em; font-weight: 800; color: #38bdf8; }
+.hero .subtitle { color: #94a3b8; margin-top: 8px; font-size: 0.95em; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; background: #111827; border-radius: 12px; padding: 4px; }
+.tab-btn {
+  padding: 10px 20px; border: none; border-radius: 10px;
+  cursor: pointer; font-size: 0.85em; font-weight: 600;
+  background: transparent; color: #8899b4;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.04); }
+.tab-btn.active { background: #1a2e3e; color: #38bdf8; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Cards */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.info-card {
+  background: #111827; border: 1px solid #263548;
+  border-radius: 14px; padding: 20px;
+}
+.info-card h3 { font-size: 0.85em; color: #38bdf8; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.info-card .kv { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.8em; }
+.info-card .kv .key { color: #94a3b8; }
+.info-card .kv .val { color: #e2e8f0; font-weight: 600; }
+
+/* Pipeline */
+.pipeline { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.pipe-step {
+  flex: 1; min-width: 180px; padding: 20px 16px;
+  background: #111827; border: 1px solid #263548;
+  border-radius: 14px; text-align: center;
+}
+.pipe-step .pipe-icon { font-size: 1.6em; margin-bottom: 8px; }
+.pipe-step .pipe-name { font-weight: 700; font-size: 0.9em; color: #38bdf8; }
+.pipe-step .pipe-desc { font-size: 0.72em; color: #94a3b8; margin-top: 4px; }
+.pipe-step .pipe-time { font-size: 0.68em; color: #64748b; margin-top: 6px; }
+.pipe-arrow { display: flex; align-items: center; color: #64748b; font-size: 1.4em; }
+
+/* Blog Content */
+.blog-card {
+  background: #111827; border: 1px solid #263548;
+  border-radius: 16px; padding: 32px;
+}
+.blog-card .blog-title { font-size: 1.5em; font-weight: 800; color: #f1f5f9; margin-bottom: 8px; }
+.blog-card .blog-meta { font-size: 0.78em; color: #64748b; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; }
+.blog-card .blog-body { color: #94a3b8; font-size: 0.88em; line-height: 1.9; }
+.blog-card .blog-body h2 { color: #e2e8f0; font-size: 1.15em; margin: 24px 0 12px; }
+.blog-card .blog-body h3 { color: #cbd5e1; font-size: 1em; margin: 18px 0 8px; }
+.blog-card .blog-body ul, .blog-card .blog-body ol { padding-left: 20px; margin: 8px 0; }
+.blog-card .blog-body li { margin-bottom: 4px; }
+.blog-card .blog-body strong { color: #cbd5e1; }
+
+/* SEO Score */
+.score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.score-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px; padding: 16px; text-align: center;
+}
+.score-card .score-value { font-size: 2em; font-weight: 800; margin-bottom: 4px; }
+.score-card .score-label { font-size: 0.75em; color: #94a3b8; }
+.score-card .score-bar { height: 6px; border-radius: 3px; margin-top: 8px; }
+.score-good { color: #4ade80; }
+.score-ok { color: #38bdf8; }
+.score-warn { color: #fbbf24; }
+
+/* Benchmark Table */
+.bench-table { width: 100%; border-collapse: collapse; font-size: 0.82em; margin-top: 16px; }
+.bench-table th { text-align: left; color: #94a3b8; padding: 10px 12px; border-bottom: 1px solid #263548; font-weight: 600; }
+.bench-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.bench-table .pass { color: #4ade80; font-weight: 600; }
+
+/* Category Cards */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.cat-card {
+  background: #111827; border: 1px solid #263548;
+  border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;
+}
+.cat-card:hover { border-color: #38bdf8; background: #1a2332; }
+.cat-card .cat-name { font-weight: 700; color: #38bdf8; font-size: 0.9em; }
+.cat-card .cat-count { font-size: 0.75em; color: #94a3b8; margin-top: 4px; }
+.cat-card .cat-slug { font-size: 0.68em; color: #64748b; font-family: monospace; }
+
+/* Agent Log */
+.agent-log {
+  background: #0a0e14; border: 1px solid #263548;
+  border-radius: 12px; padding: 16px; font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.78em; line-height: 1.8; max-height: 400px; overflow-y: auto;
+  white-space: pre-wrap; color: #a5f3fc;
+}
+.agent-log .log-info { color: #64748b; }
+.agent-log .log-step { color: #38bdf8; font-weight: 600; }
+.agent-log .log-warn { color: #fbbf24; }
+.agent-log .log-done { color: #4ade80; }
+
+.back-link { display: inline-block; margin-bottom: 20px; color: #94a3b8; text-decoration: none; font-size: 0.85em; }
+.back-link:hover { color: #38bdf8; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<a href="index.html" class="back-link">← Back to Portfolio</a>
+
+<div class="hero">
+  <h1>✍️ SEO Agent — Blog Generation Pipeline</h1>
+  <p class="subtitle">SERP Analysis → Topic Planning → Multi-Agent Writing → SEO Optimization · LangGraph + FastAPI + Next.js</p>
+</div>
+
+<!-- Pipeline Visual -->
+<div class="pipeline">
+  <div class="pipe-step">
+    <div class="pipe-icon">🔍</div>
+    <div class="pipe-name">SERP Analysis</div>
+    <div class="pipe-desc">Scan top 10 results, extract keywords, headings & competitor strategy</div>
+    <div class="pipe-time">⏱ ~15s</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">📋</div>
+    <div class="pipe-name">Topic Planning</div>
+    <div class="pipe-desc">Generate outline, H2/H3 structure, keyword placement plan</div>
+    <div class="pipe-time">⏱ ~8s</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">✍️</div>
+    <div class="pipe-name">Multi-Agent Writing</div>
+    <div class="pipe-desc">12 writers in parallel → Editor merge → Final polish</div>
+    <div class="pipe-time">⏱ ~45s</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">📊</div>
+    <div class="pipe-name">SEO Scoring</div>
+    <div class="pipe-desc">Readability, keyword density, structure, EEAT check</div>
+    <div class="pipe-time">⏱ ~10s</div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('blog-output')">📝 Blog Output</button>
+  <button class="tab-btn" onclick="switchTab('seo-score')">📊 SEO Scoring</button>
+  <button class="tab-btn" onclick="switchTab('agent-log')">🤖 Agent Execution Log</button>
+  <button class="tab-btn" onclick="switchTab('categories')">📁 Category Pages</button>
+</div>
+
+<!-- Tab: Blog Output -->
+<div class="tab-panel active" id="panel-blog-output">
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📊 Generation Stats</h3>
+      <div class="kv"><span class="key">Topic</span><span class="val">Wireless Earbuds Buyer Guide</span></div>
+      <div class="kv"><span class="key">Target Keyword</span><span class="val">best wireless earbuds 2026</span></div>
+      <div class="kv"><span class="key">Word Count</span><span class="val">1,932 words</span></div>
+      <div class="kv"><span class="key">Total Time</span><span class="val">82.1s</span></div>
+      <div class="kv"><span class="key">SEO Score</span><span class="val" style="color:#4ade80">87/100</span></div>
+      <div class="kv"><span class="key">Readability</span><span class="val" style="color:#38bdf8">Grade 8</span></div>
+    </div>
+    <div class="info-card">
+      <h3>🔄 Pipeline Status</h3>
+      <div class="kv"><span class="key">SERP Scan</span><span class="val" style="color:#4ade80">✓ 10 results</span></div>
+      <div class="kv"><span class="key">Outline</span><span class="val" style="color:#4ade80">✓ 5 H2 + 12 H3</span></div>
+      <div class="kv"><span class="key">Writers 1-4</span><span class="val" style="color:#4ade80">✓ SERP + Keywords</span></div>
+      <div class="kv"><span class="key">Writers 5-8</span><span class="val" style="color:#4ade80">✓ Content Body</span></div>
+      <div class="kv"><span class="key">Writers 9-12</span><span class="val" style="color:#4ade80">✓ SEO Polish</span></div>
+      <div class="kv"><span class="key">SEO Check</span><span class="val" style="color:#4ade80">✓ 91/100 PASS</span></div>
+    </div>
+  </div>
+
+  <div class="blog-card">
+    <div class="blog-title">Finding Your Perfect Wireless Earbuds: The Ultimate 2026 Buyer's Guide</div>
+    <div class="blog-meta">
+      <span>📅 Published: 2026-07-05</span>
+      <span>📁 Category: Audio & Electronics</span>
+      <span>⏱ Reading: 9 min</span>
+      <span>🤖 Generated by: SEO Agent v2.1</span>
+    </div>
+    <div class="blog-body">
+      <p>The wireless earbuds market has exploded in recent years, with dozens of options ranging from budget-friendly daily drivers to premium flagship models. Whether you are a <strong>commuter seeking noise cancellation</strong>, a <strong>fitness enthusiast needing sweat resistance</strong>, or an <strong>audiophile chasing the perfect soundstage</strong>, finding the right pair involves navigating a maze of specifications. This comprehensive guide breaks down everything you need to know.</p>
+
+      <h2>Why Wireless Earbuds Have Become Essential</h2>
+      <p>The global shift to wireless audio is not just about convenience — it is about <strong>fundamentally better user experiences</strong>. Modern wireless earbuds deliver:</p>
+      <ul>
+        <li><strong>True cable-free freedom</strong> — No tangled wires during commutes or workouts</li>
+        <li><strong>Advanced ANC (Active Noise Cancellation)</strong> — Block out airplane hum, office chatter, or street noise</li>
+        <li><strong>All-day battery life</strong> — 8+ hours on a single charge, 30+ hours with the charging case</li>
+        <li><strong>Seamless multi-device switching</strong> — Move from laptop to phone without re-pairing</li>
+        <li><strong>Improved call quality</strong> — AI-powered microphones filter background noise in real time</li>
+      </ul>
+
+      <h2>Key Features to Evaluate Before Buying</h2>
+      <h3>Active Noise Cancellation (ANC) Quality</h3>
+      <p>Not all ANC is created equal. Premium models like the <strong>Sony WF-1000XM5</strong> and <strong>Apple AirPods Pro 2</strong> use multiple microphones and dedicated chips to achieve -30dB noise reduction. Budget options typically offer feedforward ANC at -15dB to -20dB — <strong>enough for office environments but insufficient for flights</strong>.</p>
+
+      <h3>Audio Codec Support</h3>
+      <p>The codec determines how audio data is transmitted from your device. <strong>LDAC</strong> (Sony) and <strong>aptX Adaptive</strong> (Qualcomm) deliver near-lossless quality at up to 990 kbps, while standard <strong>AAC/SBC</strong> caps at 320 kbps. If you stream high-resolution audio from Tidal or Apple Music, codec support matters significantly.</p>
+
+      <h3>Battery Life and Charging</h3>
+      <p>Look for a minimum of <strong>6 hours per charge</strong> (with ANC on) and at least <strong>24 hours total</strong> with the case. Fast charging — 10 minutes for 1 hour of playback — is now standard on mid-range models. Wireless charging support is a nice bonus but not essential for most users.</p>
+
+      <h3>Water and Sweat Resistance (IP Rating)</h3>
+      <p>For gym use, aim for <strong>IPX4 or higher</strong>. IPX4 protects against splashing sweat and light rain. IPX5-6 can handle heavy rain. Only a few models like the Jabra Elite 8 Active offer IP68 for full submersion — important if you run in all weather conditions.</p>
+
+      <h2>Top Picks: 2026 Comparison Table</h2>
+      <div style="overflow-x:auto;margin:16px 0;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.85em;">
+          <tr style="border-bottom:1px solid #263548;"><th style="text-align:left;padding:8px;color:#94a3b8;">Model</th><th style="text-align:center;padding:8px;color:#38bdf8;">Price</th><th style="text-align:center;padding:8px;">ANC</th><th style="text-align:center;padding:8px;">Battery</th><th style="text-align:center;padding:8px;">Best For</th></tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px;font-weight:600;">Sony WF-1000XM5</td><td style="text-align:center;padding:8px;">$299</td><td style="text-align:center;padding:8px;color:#4ade80;">★★★★★</td><td style="text-align:center;padding:8px;">8h + 24h</td><td style="text-align:center;padding:8px;">Audiophiles, Travel</td></tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px;font-weight:600;">AirPods Pro 2</td><td style="text-align:center;padding:8px;">$249</td><td style="text-align:center;padding:8px;color:#4ade80;">★★★★★</td><td style="text-align:center;padding:8px;">6h + 30h</td><td style="text-align:center;padding:8px;">Apple Ecosystem</td></tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px;font-weight:600;">Nothing Ear (3)</td><td style="text-align:center;padding:8px;">$149</td><td style="text-align:center;padding:8px;color:#fbbf24;">★★★★</td><td style="text-align:center;padding:8px;">7h + 29h</td><td style="text-align:center;padding:8px;">Design, Value</td></tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px;font-weight:600;">Samsung Galaxy Buds3 Pro</td><td style="text-align:center;padding:8px;">$229</td><td style="text-align:center;padding:8px;color:#4ade80;">★★★★★</td><td style="text-align:center;padding:8px;">7h + 30h</td><td style="text-align:center;padding:8px;">Android Users</td></tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:8px;font-weight:600;">Soundcore Liberty 4 NC</td><td style="text-align:center;padding:8px;color:#4ade80;">$99</td><td style="text-align:center;padding:8px;color:#fbbf24;">★★★★</td><td style="text-align:center;padding:8px;">10h + 50h</td><td style="text-align:center;padding:8px;color:#4ade80;">Budget Pick</td></tr>
+        </table>
+      </div>
+
+      <h2>How to Choose Based on Your Budget</h2>
+      <h3>Under $100 — Solid Daily Drivers</h3>
+      <p>At this price point, expect <strong>decent ANC, 6-8 hours battery</strong>, and AAC/SBC codec support. The Anker Soundcore Liberty 4 NC and EarFun Air Pro 4 consistently top "best budget" lists. You will miss LDAC support and premium build materials, but the core experience is surprisingly good.</p>
+
+      <h3>$100–$200 — The Sweet Spot</h3>
+      <p>This is where most people should look. The Nothing Ear (3) at $149 offers <strong>excellent ANC, LDAC support, and a unique transparent design</strong>. OnePlus Buds Pro 3 and Google Pixel Buds Pro 2 also compete strongly here with tight ecosystem integration.</p>
+
+      <h3>$200+ — Premium Flagships</h3>
+      <p>If budget is no concern, the Sony WF-1000XM5 ($299) remains the gold standard for sound quality and ANC. AirPods Pro 2 are the obvious choice for iPhone users. The key tradeoff at this tier is <strong>ecosystem lock-in vs. cross-platform flexibility</strong>.</p>
+
+      <h2>Care and Maintenance Tips</h2>
+      <ol>
+        <li><strong>Clean regularly</strong> — Use a dry cotton swab to remove earwax from speaker grilles. A slightly damp cloth works for the exterior.</li>
+        <li><strong>Keep the case charged</strong> — Lithium-ion batteries degrade faster when fully discharged. Top up the case at 20-30% for best longevity.</li>
+        <li><strong>Update firmware</strong> — Manufacturers regularly improve ANC algorithms and fix bugs via firmware updates. Check your companion app monthly.</li>
+        <li><strong>Use the right ear tips</strong> — A proper seal is critical for both sound quality and ANC performance. Experiment with the sizes included in the box.</li>
+        <li><strong>Avoid extreme temperatures</strong> — Do not leave earbuds in a hot car or direct sunlight. Battery damage from heat is typically not covered by warranty.</li>
+      </ol>
+
+      <h2>Frequently Asked Questions</h2>
+      <h3>Do wireless earbuds work with all phones?</h3>
+      <p>Yes. All modern wireless earbuds use standard Bluetooth 5.3 and work with both iPhone and Android. However, some advanced features — like spatial audio, one-tap pairing, and Find My integration — may be exclusive to specific ecosystems.</p>
+
+      <h3>Is ANC safe for everyday use?</h3>
+      <p>Absolutely. ANC uses inverse sound waves to cancel noise — it does not emit harmful radiation or pressure. Many users find ANC reduces listening fatigue because they can keep the volume lower in noisy environments.</p>
+
+      <h3>How long do wireless earbuds typically last?</h3>
+      <p>With proper care, expect <strong>2–3 years</strong> of daily use before battery degradation becomes noticeable. After about 500 charge cycles, battery capacity drops to roughly 70-80% of the original. Premium models tend to hold up better over time.</p>
+
+      <h3>Can I use wireless earbuds for calls in noisy places?</h3>
+      <p>Yes — modern earbuds use <strong>beamforming microphones and AI noise reduction</strong> to isolate your voice. The AirPods Pro 2 and Sony XM5 perform particularly well in windy or crowded environments. Budget models may struggle in very loud settings.</p>
+
+      <h2>Conclusion</h2>
+      <p>Finding your <strong>perfect wireless earbuds</strong> comes down to three factors: <strong>budget, primary use case, and ecosystem preference</strong>. Commuters should prioritize ANC quality. Gym-goers need IPX4+ water resistance. Audiophiles will want LDAC or aptX Adaptive support. The good news is that 2026 offers exceptional options at every price point — from the $99 Soundcore Liberty 4 NC to the $299 Sony WF-1000XM5.</p>
+      <p style="margin-top:12px;"><strong>Ready to find your perfect pair?</strong> Browse our <a href="#" style="color:#38bdf8;">comprehensive wireless earbuds comparison tool</a> with side-by-side specs and real-user reviews.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: SEO Scoring -->
+<div class="tab-panel" id="panel-seo-score">
+  <div class="score-grid">
+    <div class="score-card">
+      <div class="score-value score-good">91</div>
+      <div class="score-label">Overall SEO Score</div>
+      <div class="score-bar" style="background:linear-gradient(90deg,#4ade80 87%,#263548 87%)"></div>
+    </div>
+    <div class="score-card">
+      <div class="score-value score-good">92</div>
+      <div class="score-label">Keyword Optimization</div>
+      <div class="score-bar" style="background:linear-gradient(90deg,#4ade80 92%,#263548 92%)"></div>
+    </div>
+    <div class="score-card">
+      <div class="score-value score-ok">85</div>
+      <div class="score-label">Readability</div>
+      <div class="score-bar" style="background:linear-gradient(90deg,#38bdf8 85%,#263548 85%)"></div>
+    </div>
+    <div class="score-card">
+      <div class="score-value score-good">90</div>
+      <div class="score-label">Structure (H2/H3)</div>
+      <div class="score-bar" style="background:linear-gradient(90deg,#4ade80 90%,#263548 90%)"></div>
+    </div>
+    <div class="score-card">
+      <div class="score-value score-warn">78</div>
+      <div class="score-label">Internal Links</div>
+      <div class="score-bar" style="background:linear-gradient(90deg,#fbbf24 78%,#263548 78%)"></div>
+    </div>
+    <div class="score-card">
+      <div class="score-value score-good">95</div>
+      <div class="score-label">Meta Tags</div>
+      <div class="score-bar" style="background:linear-gradient(90deg,#4ade80 95%,#263548 95%)"></div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-bottom:16px;">
+    <h3>📋 SEO Benchmark — Passed Checks</h3>
+    <table class="bench-table">
+      <thead><tr><th>Check Item</th><th>Target</th><th>Actual</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Title Tag Length</td><td>50–65 chars</td><td>62 chars</td><td class="pass">✓</td></tr>
+        <tr><td>Meta Description</td><td>120–160 chars</td><td>148 chars</td><td class="pass">✓</td></tr>
+        <tr><td>H1 Count</td><td>Exactly 1</td><td>1</td><td class="pass">✓</td></tr>
+        <tr><td>H2 Count</td><td>3–8</td><td>5</td><td class="pass">✓</td></tr>
+        <tr><td>Keyword Density</td><td>1–3%</td><td>2.1%</td><td class="pass">✓</td></tr>
+        <tr><td>Keyword in First 100 Words</td><td>Yes</td><td>Yes (word 8)</td><td class="pass">✓</td></tr>
+        <tr><td>Image Alt Text Present</td><td>All images</td><td>N/A (text-only demo)</td><td class="pass">✓</td></tr>
+        <tr><td>Word Count</td><td>>1,500</td><td>1,847</td><td class="pass">✓</td></tr>
+        <tr><td>Flesch Reading Ease</td><td>>60</td><td>64.2</td><td class="pass">✓</td></tr>
+        <tr><td>Internal Links</td><td>3–5</td><td>2</td><td style="color:#fbbf24;">⚠ 78</td></tr>
+        <tr><td>External Links</td><td>1–2</td><td>0</td><td style="color:#fbbf24;">⚠ 72</td></tr>
+        <tr><td>Mobile Friendly</td><td>Yes</td><td>Yes</td><td class="pass">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Tab: Agent Execution Log -->
+<div class="tab-panel" id="panel-agent-log">
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🤖 Agent Configuration</h3>
+      <div class="kv"><span class="key">Framework</span><span class="val">LangGraph (StateGraph)</span></div>
+      <div class="kv"><span class="key">LLM</span><span class="val">GPT-4o (via OpenAI API)</span></div>
+      <div class="kv"><span class="key">Writer Agents</span><span class="val">12 parallel workers</span></div>
+      <div class="kv"><span class="key">Retry Logic</span><span class="val">Max 2 retries per node</span></div>
+      <div class="kv"><span class="key">Memory</span><span class="val">ChromaDB (persistent)</span></div>
+    </div>
+  </div>
+
+  <div class="agent-log">
+<span class="log-info">[2026-07-05 10:23:01.442] INFO     SEO Agent Pipeline started</span>
+<span class="log-info">[2026-07-05 10:23:01.445] INFO     ── Node: serp_analyzer ──</span>
+<span class="log-step">[2026-07-05 10:23:02.118] STEP     Fetching SERP for: "best wireless earbuds 2026"</span>
+<span class="log-info">[2026-07-05 10:23:08.442] INFO     Retrieved 10 results from Google SERP</span>
+<span class="log-info">[2026-07-05 10:23:12.891] INFO     Extracted: keywords=24, avg_word_count=1847, headings=[H2=5.2, H3=3.8]</span>
+<span class="log-info">[2026-07-05 10:23:15.223] INFO     Competitor gap analysis: FAQ section missing in 6/10 results</span>
+<span class="log-done">[2026-07-05 10:23:16.001] DONE     SERP analysis complete (14.6s)</span>
+
+<span class="log-info">[2026-07-05 10:23:16.005] INFO     ── Node: topic_planner ──</span>
+<span class="log-step">[2026-07-05 10:23:16.008] STEP     Generating content outline...</span>
+<span class="log-info">[2026-07-05 10:23:20.334] INFO     Outline: 5 H2 sections, 12 H3 subsections</span>
+<span class="log-info">[2026-07-05 10:23:22.115] INFO     Keyword placement: primary=3 mentions, secondary=12, LSI=8</span>
+<span class="log-done">[2026-07-05 10:23:23.887] DONE     Topic planning complete (7.9s)</span>
+
+<span class="log-info">[2026-07-05 10:23:23.890] INFO     ── Node: multi_writer (parallel) ──</span>
+<span class="log-step">[2026-07-05 10:23:23.892] STEP     Spawning 12 writer agents in parallel...</span>
+<span class="log-info">[2026-07-05 10:23:23.895] INFO       Writers 1-4: assigned [SERP competitor analysis, keyword extraction, reader intent mapping]</span>
+<span class="log-info">[2026-07-05 10:23:23.896] INFO       Writers 5-8: assigned [ANC deep-dive, comparison table, budget guide, maintenance tips]</span>
+<span class="log-info">[2026-07-05 10:23:23.897] INFO       Writers 9-12: assigned [FAQ generation, EEAT signals, internal linking, meta optimization]</span>
+<span class="log-info">[2026-07-05 10:23:38.442] INFO       Writers 1-4: sections complete, 1,847 words total (14.5s avg)</span>
+<span class="log-info">[2026-07-05 10:23:41.118] INFO       Writers 5-8: sections complete, 2,103 words total (17.2s avg)</span>
+<span class="log-warn">[2026-07-05 10:23:44.552] WARN      Writer-12: keyword density high (3.8%), retrying (1/2)...</span>
+<span class="log-info">[2026-07-05 10:23:56.334] INFO       Writers 9-12: sections complete, 1,891 words total (32.4s max, 1 retry)</span>
+<span class="log-step">[2026-07-05 10:23:56.338] STEP     Editor merging 12 sections...</span>
+<span class="log-info">[2026-07-05 10:24:04.115] INFO     Merge complete: 5,841 words (trimmed to 1,847), style consistency=0.88</span>
+<span class="log-done">[2026-07-05 10:24:05.001] DONE     Multi-writer complete (41.1s)</span>
+
+<span class="log-info">[2026-07-05 10:24:05.004] INFO     ── Node: seo_scorer ──</span>
+<span class="log-step">[2026-07-05 10:24:05.006] STEP     Running 12 SEO quality checks...</span>
+<span class="log-info">[2026-07-05 10:24:08.223] INFO       ✓ Title length (62 chars)</span>
+<span class="log-info">[2026-07-05 10:24:08.224] INFO       ✓ Meta description (148 chars)</span>
+<span class="log-info">[2026-07-05 10:24:08.225] INFO       ✓ H1 count (1)</span>
+<span class="log-info">[2026-07-05 10:24:08.226] INFO       ✓ Keyword density (2.1%)</span>
+<span class="log-info">[2026-07-05 10:24:08.227] INFO       ✓ First 100 words (keyword at position 8)</span>
+<span class="log-info">[2026-07-05 10:24:08.228] INFO       ✓ Flesch score (64.2)</span>
+<span class="log-info">[2026-07-05 10:24:08.229] INFO       ⚠ Internal links (2, target: 3-5)</span>
+<span class="log-info">[2026-07-05 10:24:08.230] INFO       ⚠ External links (0, target: 1-2)</span>
+<span class="log-info">[2026-07-05 10:24:12.445] INFO     Final score: 87/100 → PASS (threshold: 75)</span>
+<span class="log-done">[2026-07-05 10:24:14.887] DONE     SEO scoring complete (9.9s)</span>
+
+<span class="log-info">[2026-07-05 10:24:14.890] INFO     ── Node: persist_to_chromadb ──</span>
+<span class="log-info">[2026-07-05 10:24:15.223] INFO     Stored embedding in ChromaDB: collection=blog_content, id=blog_20260705_003</span>
+<span class="log-done">[2026-07-05 10:24:15.445] DONE     Persisted to long-term memory (0.6s)</span>
+
+<span class="log-info">[2026-07-05 10:24:15.448] INFO     ── Node: astro_site_gen ──</span>
+<span class="log-step">[2026-07-05 10:24:15.450] STEP     Generating static site page...</span>
+<span class="log-info">[2026-07-05 10:24:18.112] INFO     Generated: /site-root/finding-your-perfect-wireless-earbuds-ultimate-buyers-guide.html</span>
+<span class="log-done">[2026-07-05 10:24:18.334] DONE     Astro site generation complete (2.9s)</span>
+
+<span class="log-info">[2026-07-05 10:24:18.336] INFO     ═══════════════════════════════════════</span>
+<span class="log-info">[2026-07-05 10:24:18.337] INFO     Pipeline complete: 4/4 stages passed</span>
+<span class="log-info">[2026-07-05 10:24:18.338] INFO     Total time: 76.9s | Tokens: 4,821 | Cost: $0.14</span>
+<span class="log-done">[2026-07-05 10:24:18.339] DONE     ✅ Blog published successfully</span>
+  </div>
+</div>
+
+<!-- Tab: Category Pages -->
+<div class="tab-panel" id="panel-categories">
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📁 Category Page Management</h3>
+      <div class="kv"><span class="key">Total Categories</span><span class="val">4 active</span></div>
+      <div class="kv"><span class="key">Generated Pages</span><span class="val">5 HTML files</span></div>
+      <div class="kv"><span class="key">Generator</span><span class="val">Astro SSG</span></div>
+      <div class="kv"><span class="key">Deploy Target</span><span class="val">site-root/</span></div>
+    </div>
+  </div>
+
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cat-name">🎧 Wireless Earbuds</div>
+      <div class="cat-count">24 products · 8 reviews</div>
+      <div class="cat-slug">/wireless-earbuds.html</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-name">🎵 Over-Ear Headphones</div>
+      <div class="cat-count">16 products · 5 reviews</div>
+      <div class="cat-slug">/over-ear-headphones.html</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-name">🏋️ Sports & Fitness Audio</div>
+      <div class="cat-count">12 products · IPX4+ rated</div>
+      <div class="cat-slug">/sports-fitness-audio.html</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-name">📖 Buyer''s Guides</div>
+      <div class="cat-count">6 guides · 2026 Edition</div>
+      <div class="cat-slug">/buyers-guides.html</div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-top:16px;">
+    <h3>🔗 Generated Site Map</h3>
+    <div style="font-family:monospace;font-size:0.82em;color:#94a3b8;line-height:2;">
+      site-root/<br>
+      ├── <span style="color:#38bdf8;">wireless-earbuds.html</span> — Category landing page<br>
+      ├── <span style="color:#38bdf8;">over-ear-headphones.html</span> — Headphone catalog<br>
+      ├── <span style="color:#38bdf8;">sports-fitness-audio.html</span> — Sports audio collection<br>
+      ├── <span style="color:#38bdf8;">buyers-guides.html</span> — All buyer guides<br>
+      └── <span style="color:#38bdf8;">finding-your-perfect-wireless-earbuds-ultimate-buyers-guide.html</span> — Blog post (NEW)
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab-btn[onclick*="'+name+'"]').classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+</script>
+
+</body>
+</html>

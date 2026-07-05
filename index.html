@@ -1,0 +1,422 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Developer — Portfolio</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #080c14;
+  --surface: #111827;
+  --surface-hover: #1a2332;
+  --border: #1e3a5f;
+  --border-light: #263548;
+  --text: #e2e8f0;
+  --text-muted: #8899b4;
+  --accent-blue: #38bdf8;
+  --accent-green: #4ade80;
+  --accent-purple: #a78bfa;
+  --accent-amber: #fbbf24;
+}
+
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Navigation ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8, 12, 20, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 0;
+}
+.nav .container { display: flex; align-items: center; justify-content: space-between; }
+.nav .logo { font-size: 1.15em; font-weight: 700; color: var(--accent-blue); letter-spacing: -0.3px; }
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+/* ── Hero ── */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+}
+.hero .badge {
+  display: inline-block; padding: 5px 16px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  color: var(--accent-blue); font-size: 0.8em; font-weight: 600;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: 2.8em; font-weight: 800; letter-spacing: -1px;
+  background: linear-gradient(135deg, #38bdf8 0%, #a78bfa 50%, #4ade80 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+.hero .tagline { font-size: 1.15em; color: var(--text-muted); max-width: 560px; margin: 0 auto 28px; }
+.hero .quick-stats { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+.hero .stat-item { text-align: center; }
+.hero .stat-num { font-size: 1.6em; font-weight: 700; color: var(--accent-blue); }
+.hero .stat-label { font-size: 0.78em; color: var(--text-muted); }
+
+/* ── Section Titles ── */
+.section-title {
+  font-size: 1.5em; font-weight: 700; margin-bottom: 28px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-title::before {
+  content: ""; display: inline-block; width: 4px; height: 22px;
+  background: var(--accent-blue); border-radius: 2px;
+}
+
+/* ── Project Cards ── */
+.projects-section { padding: 40px 0 60px; }
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 32px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.project-card:hover { border-color: var(--border); box-shadow: 0 8px 40px rgba(0,0,0,0.3); }
+
+.project-hero {
+  padding: 36px 36px 20px;
+  position: relative;
+}
+.project-hero.omnisell { background: linear-gradient(135deg, #0a1e14 0%, #132e21 100%); }
+.project-hero.seo { background: linear-gradient(135deg, #0a1a2e 0%, #13243e 100%); }
+.project-hero .project-icon { font-size: 2em; margin-bottom: 8px; }
+.project-hero h2 { font-size: 1.6em; font-weight: 700; }
+.project-hero.omnisell h2 { color: var(--accent-green); }
+.project-hero.seo h2 { color: var(--accent-blue); }
+.project-hero .project-subtitle { color: var(--text-muted); font-size: 0.9em; margin-top: 4px; }
+
+.project-body { padding: 0 36px 32px; }
+
+/* Tags */
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tag {
+  padding: 4px 12px; border-radius: 6px;
+  font-size: 0.75em; font-weight: 600;
+}
+.tag.lang { background: rgba(56,189,248,0.12); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.2); }
+.tag.fw { background: rgba(167,139,250,0.12); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.2); }
+.tag.infra { background: rgba(74,222,128,0.12); color: #86efac; border: 1px solid rgba(74,222,128,0.2); }
+.tag.ai { background: rgba(251,191,36,0.12); color: #fde68a; border: 1px solid rgba(251,191,36,0.2); }
+
+/* Feature Grid */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.feature-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px; padding: 14px 16px;
+}
+.feature-item .feat-icon { font-size: 1.1em; margin-bottom: 4px; }
+.feature-item .feat-title { font-size: 0.85em; font-weight: 600; color: var(--text); }
+.feature-item .feat-desc { font-size: 0.75em; color: var(--text-muted); margin-top: 2px; }
+
+/* Screenshot Strip */
+.screenshot-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
+.screenshot-strip img {
+  height: 140px; border-radius: 10px;
+  border: 1px solid var(--border-light);
+  flex-shrink: 0; cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.screenshot-strip img:hover { transform: scale(1.03); border-color: var(--accent-blue); }
+
+/* Demo Links */
+.demo-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.demo-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px;
+  font-size: 0.85em; font-weight: 600; text-decoration: none;
+  transition: all 0.2s;
+}
+.demo-link.primary {
+  background: var(--accent-blue); color: #080c14;
+}
+.demo-link.primary:hover { background: #7dd3fc; }
+.demo-link.secondary {
+  border: 1px solid var(--border); color: var(--accent-blue);
+}
+.demo-link.secondary:hover { border-color: var(--accent-blue); background: rgba(56,189,248,0.08); }
+.demo-link.green {
+  background: var(--accent-green); color: #080c14;
+}
+.demo-link.green:hover { background: #86efac; }
+
+/* ── Architecture Section ── */
+.arch-section { padding: 40px 0 60px; }
+.arch-diagram {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 20px; padding: 32px;
+  overflow-x: auto;
+}
+.arch-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+.arch-box {
+  padding: 12px 20px; border-radius: 10px;
+  font-size: 0.82em; font-weight: 600; text-align: center;
+  white-space: nowrap;
+}
+.arch-box.frontend { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: #c4b5fd; }
+.arch-box.backend { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #7dd3fc; }
+.arch-box.data { background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3); color: #86efac; }
+.arch-box.ai { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); color: #fde68a; }
+.arch-arrow { color: var(--text-muted); font-size: 1.2em; display: flex; align-items: center; }
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--border-light);
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-muted); font-size: 0.82em;
+}
+.footer a { color: var(--accent-blue); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2em; }
+  .hero .quick-stats { gap: 18px; }
+  .project-hero, .project-body { padding-left: 20px; padding-right: 20px; }
+  .feature-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="container">
+    <span class="logo">⚡ AI Agent Portfolio</span>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="https://github.com" target="_blank">GitHub ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="badge">🔬 AI Agent Developer</div>
+    <h1>Intelligent Agent<br>Engineering Portfolio</h1>
+    <p class="tagline">
+专注于 LLM Agent、RAG、Multi-Agent 协作的生产级 AI 应用开发。
+从电商智能运营到 SEO 内容生成，全链路 Agent 工程实践。
+    </p>
+    <div class="quick-stats">
+      <div class="stat-item"><div class="stat-num">2</div><div class="stat-label">Production Projects</div></div>
+      <div class="stat-item"><div class="stat-num">5+</div><div class="stat-label">AI Models Integrated</div></div>
+      <div class="stat-item"><div class="stat-num">88</div><div class="stat-label">Tests Passing</div></div>
+      <div class="stat-item"><div class="stat-num">Docker</div><div class="stat-label">One-Click Deploy</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section class="projects-section" id="projects">
+  <div class="container">
+    <h3 class="section-title">Featured Projects</h3>
+
+    <!-- OmniSell -->
+    <div class="project-card">
+      <div class="project-hero omnisell">
+        <div class="project-icon">🛒</div>
+        <h2>OmniSell AI</h2>
+        <p class="project-subtitle">Multi-Agent E-Commerce Operations Automation Platform</p>
+      </div>
+      <div class="project-body">
+        <div class="tag-list">
+          <span class="tag lang">Python</span>
+          <span class="tag fw">FastAPI</span>
+          <span class="tag infra">Docker Compose</span>
+          <span class="tag ai">LangChain</span>
+          <span class="tag ai">vLLM</span>
+          <span class="tag infra">ChromaDB</span>
+          <span class="tag ai">Qwen2.5-7B</span>
+          <span class="tag lang">RAG</span>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-item">
+            <div class="feat-icon">🤖</div>
+            <div class="feat-title">Multi-Agent Collaboration</div>
+            <div class="feat-desc">CS Agent + Price Agent + Sync Agent orchestrated via GroupChat</div>
+          </div>
+          <div class="feature-item">
+            <div class="feat-icon">🔍</div>
+            <div class="feat-title">RAG Knowledge Base</div>
+            <div class="feat-desc">ChromaDB vector search with products, orders & knowledge retrieval</div>
+          </div>
+          <div class="feature-item">
+            <div class="feat-icon">🛡️</div>
+            <div class="feat-title">Safety Guardrails</div>
+            <div class="feat-desc">Domain guard, circuit breaker, HITL approval, audit logging</div>
+          </div>
+          <div class="feature-item">
+            <div class="feat-icon">📦</div>
+            <div class="feat-title">Sandbox Execution</div>
+            <div class="feat-desc">Isolated code execution with policy-based access control</div>
+          </div>
+        </div>
+
+        <div class="screenshot-strip">
+          <img src="screenshots/08_omnisell_test_dashboard.png" alt="OmniSell Test Dashboard" title="Test Dashboard — 88/88 Passing">
+          <img src="screenshots/09_omnisell_test_dashboard_ui.png" alt="OmniSell Full UI" title="Full System Dashboard">
+          <img src="screenshots/01_omnisell_swagger_docs.png" alt="API Swagger Docs" title="Swagger API Documentation">
+          <img src="screenshots/02_omnisell_redoc_api.png" alt="API ReDoc" title="ReDoc API Reference">
+          <img src="screenshots/03_omnisell_health_check.png" alt="Health Check" title="System Health Check">
+        </div>
+
+        <div class="demo-links">
+          <a href="omnisell_agent_demo.html" class="demo-link green">🤖 Agent Interaction Demo</a>
+          <a href="omnisell_full_dashboard.html" class="demo-link green">📊 Full Dashboard</a>
+          <a href="omnisell_test_dashboard.html" class="demo-link secondary">🧪 Test Report</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Agent -->
+    <div class="project-card">
+      <div class="project-hero seo">
+        <div class="project-icon">✍️</div>
+        <h2>SEO Agent — Blog Generator</h2>
+        <p class="project-subtitle">AI-Powered Content Pipeline: SERP Analysis → Topic Planning → Multi-Agent Writing → SEO Optimization</p>
+      </div>
+      <div class="project-body">
+        <div class="tag-list">
+          <span class="tag lang">Python</span>
+          <span class="tag fw">FastAPI</span>
+          <span class="tag fw">Next.js</span>
+          <span class="tag fw">Astro</span>
+          <span class="tag ai">LangGraph</span>
+          <span class="tag ai">OpenAI API</span>
+          <span class="tag infra">ChromaDB</span>
+          <span class="tag lang">TypeScript</span>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-item">
+            <div class="feat-icon">🔄</div>
+            <div class="feat-title">4-Stage Pipeline</div>
+            <div class="feat-desc">SERP Analysis → Topic Planning → Multi-Agent Writing → SEO Quality Check</div>
+          </div>
+          <div class="feature-item">
+            <div class="feat-icon">🧠</div>
+            <div class="feat-title">LangGraph Workflow</div>
+            <div class="feat-desc">State-machine Agent with conditional routing & retry logic</div>
+          </div>
+          <div class="feature-item">
+            <div class="feat-icon">💾</div>
+            <div class="feat-title">Long-Term Memory</div>
+            <div class="feat-desc">ChromaDB persistent storage with content history & style learning</div>
+          </div>
+          <div class="feature-item">
+            <div class="feat-icon">🎛️</div>
+            <div class="feat-title">Operations Dashboard</div>
+            <div class="feat-desc">Next.js control panel with task management & real-time streaming</div>
+          </div>
+        </div>
+
+        <div class="screenshot-strip">
+          <img src="screenshots/09_seo_agent_dashboard_ui.png" alt="SEO Agent Dashboard" title="Full System Dashboard">
+          <img src="screenshots/08_blog_generation_dashboard.png" alt="Blog Generation" title="Blog Generation Dashboard">
+          <img src="screenshots/10_blog_output_preview_ui.png" alt="Blog Output Preview UI" title="Blog Preview Interface">
+          <img src="screenshots/09_blog_output_preview.png" alt="Blog Output" title="Generated Blog Output">
+        </div>
+
+        <div class="demo-links">
+          <a href="seo_agent_blog_demo.html" class="demo-link primary">🤖 Blog Generation Demo</a>
+          <a href="seo_agent_full_dashboard.html" class="demo-link primary">📊 Full Dashboard</a>
+          <a href="blog_demo_dashboard.html" class="demo-link secondary">📝 Blog Demo Results</a>
+          <a href="09_blog_output_preview.html" class="demo-link secondary">📄 Output Preview</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section class="arch-section" id="architecture">
+  <div class="container">
+    <h3 class="section-title">Technical Architecture</h3>
+
+    <div class="arch-diagram">
+      <div style="text-align:center;margin-bottom:4px;font-size:0.78em;color:var(--text-muted);">
+        OmniSell AI — System Topology
+      </div>
+      <div class="arch-row">
+        <span class="arch-box frontend">FastAPI Server</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box backend">Multi-Agent GroupChat</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box ai">vLLM · Qwen2.5-7B</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-box data">ChromaDB</span>
+        <span class="arch-box backend">RAG Pipeline</span>
+        <span class="arch-box frontend">OAuth2 + RBAC</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-box data">Safety Layer</span>
+        <span class="arch-box ai">Sandbox Executor</span>
+        <span class="arch-box data">Audit Logger</span>
+      </div>
+
+      <div style="text-align:center;margin:28px 0 4px;font-size:0.78em;color:var(--text-muted);">
+        SEO Agent — Content Pipeline
+      </div>
+      <div class="arch-row">
+        <span class="arch-box frontend">Next.js Dashboard</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box backend">FastAPI Backend</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box ai">LangGraph Agent</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-box ai">SERP Analyzer</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box ai">Topic Planner</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box ai">Multi-Writer</span>
+        <span class="arch-arrow">→</span>
+        <span class="arch-box ai">SEO Scorer</span>
+      </div>
+      <div class="arch-row">
+        <span class="arch-box data">ChromaDB Memory</span>
+        <span class="arch-box backend">Streaming API</span>
+        <span class="arch-box frontend">Astro Site Gen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p>Built with ❤️ · Deployed via <a href="https://pages.github.com" target="_blank">GitHub Pages</a></p>
+    <p style="margin-top:4px;">
+      <a href="https://github.com" target="_blank">View Source on GitHub</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

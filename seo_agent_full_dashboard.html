@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Agent Blog Generator - Full System Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: linear-gradient(135deg, #0a0f1e 0%, #111827 40%, #0f172a 100%);
+  color: #e2e8f0; padding: 48px 32px;
+}
+.container { max-width: 1280px; margin: 0 auto; }
+
+/* Header */
+.hero {
+  text-align: center; margin-bottom: 40px; padding: 48px 40px;
+  background: linear-gradient(135deg, #0f2847 0%, #1a365d 30%, #153e75 60%, #1e3a5f 100%);
+  border-radius: 24px; border: 1px solid #2d4a7a;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ""; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero h1 { font-size: 2.4em; font-weight: 800; color: #38bdf8; position: relative; z-index: 1; }
+.hero .subtitle { font-size: 1.1em; color: #94a3b8; margin-top: 12px; position: relative; z-index: 1; }
+.hero .badges { margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.hero .badge {
+  background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3);
+  border-radius: 20px; padding: 6px 16px; font-size: 0.85em; color: #7dd3fc;
+}
+
+/* Key Metrics Row */
+.metrics {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 32px;
+}
+.metric {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid #334155; border-radius: 16px; padding: 24px 18px; text-align: center;
+  transition: transform 0.2s;
+}
+.metric:hover { transform: translateY(-2px); border-color: #38bdf8; }
+.metric .icon { font-size: 2em; margin-bottom: 8px; }
+.metric .value { font-size: 2.2em; font-weight: 800; color: #38bdf8; line-height: 1.2; }
+.metric .label { font-size: 0.82em; color: #94a3b8; margin-top: 6px; }
+
+/* Section */
+.section {
+  background: linear-gradient(180deg, #1e293b 0%, #162032 100%);
+  border: 1px solid #334155; border-radius: 20px; padding: 32px; margin-bottom: 28px;
+}
+.section h2 {
+  font-size: 1.3em; color: #38bdf8; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section h2 .dot {
+  width: 10px; height: 10px; border-radius: 50%; background: #38bdf8;
+  box-shadow: 0 0 12px rgba(56,189,248,0.5);
+}
+
+/* Pipeline */
+.pipeline {
+  display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 16px 0;
+}
+.pipeline-node {
+  min-width: 128px; text-align: center; padding: 20px 14px;
+  background: linear-gradient(180deg, #1e3a5f 0%, #0f2847 100%);
+  border: 1px solid #2d4a7a; border-radius: 14px;
+  position: relative; flex-shrink: 0;
+}
+.pipeline-node .num {
+  width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #0f172a; font-weight: 800; font-size: 1em;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;
+}
+.pipeline-node .title { font-size: 0.85em; font-weight: 700; color: #e2e8f0; }
+.pipeline-node .desc { font-size: 0.7em; color: #94a3b8; margin-top: 4px; line-height: 1.4; }
+.pipeline-arrow {
+  flex-shrink: 0; padding: 0 6px;
+  color: #38bdf8; font-size: 1.2em; font-weight: bold;
+}
+
+/* Architecture Layout */
+.arch-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+.arch-box {
+  background: #0f172a; border: 1px solid #334155; border-radius: 14px; padding: 24px;
+}
+.arch-box h3 { color: #38bdf8; font-size: 1em; margin-bottom: 16px; }
+.arch-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid #1e293b; font-size: 0.85em;
+}
+.arch-item .tag {
+  background: rgba(56,189,248,0.15); color: #7dd3fc;
+  border-radius: 6px; padding: 3px 8px; font-size: 0.75em; font-weight: 600;
+}
+
+/* Score Cards */
+.scores {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+}
+.score-card {
+  background: #0f172a; border: 1px solid #334155; border-radius: 14px;
+  padding: 20px 14px; text-align: center;
+}
+.score-card .dim { font-size: 0.78em; color: #94a3b8; margin-bottom: 10px; }
+.score-ring {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2em; font-weight: 800;
+}
+.score-card .label { font-size: 0.7em; color: #64748b; }
+
+/* Process Steps */
+.process-list {
+  display: grid; gap: 10px;
+}
+.process-item {
+  display: flex; align-items: flex-start; gap: 14px; padding: 16px;
+  background: #0f172a; border: 1px solid #334155; border-radius: 12px;
+}
+.process-item .step-num {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.85em; flex-shrink: 0;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a;
+}
+.process-item .step-content h4 { font-size: 0.9em; color: #e2e8f0; }
+.process-item .step-content p { font-size: 0.78em; color: #94a3b8; margin-top: 4px; }
+
+/* Footer */
+.footer {
+  text-align: center; color: #475569; font-size: 0.8em; margin-top: 40px; padding-top: 20px;
+  border-top: 1px solid #1e293b;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ====== HERO ====== -->
+<div class="hero">
+  <h1>🤖 SEO Agent 博客生成器 — 全链路运行仪表盘</h1>
+  <div class="subtitle">LangGraph 12-Node DAG Pipeline · Gemini 2.5 Flash · 全自动 AI 内容工厂</div>
+  <div class="badges">
+    <span class="badge">🏗️ 12 Agent 节点</span>
+    <span class="badge">📝 8 阶段流水线</span>
+    <span class="badge">⚡ 145s 全自动生成</span>
+    <span class="badge">📊 8.4/10 综合质量评分</span>
+    <span class="badge">🌐 10+ 语种支持</span>
+    <span class="badge">💰 $0.10/篇 API 成本</span>
+  </div>
+</div>
+
+<!-- ====== KEY METRICS ====== -->
+<div class="metrics">
+  <div class="metric">
+    <div class="icon">📁</div>
+    <div class="value">8,167</div>
+    <div class="label">Python 源文件</div>
+  </div>
+  <div class="metric">
+    <div class="icon">🔗</div>
+    <div class="value">12</div>
+    <div class="label">LangGraph 节点</div>
+  </div>
+  <div class="metric">
+    <div class="icon">⏱️</div>
+    <div class="value">145s</div>
+    <div class="label">端到端生成耗时</div>
+  </div>
+  <div class="metric">
+    <div class="icon">⭐</div>
+    <div class="value">8.4<span style="font-size:0.5em">/10</span></div>
+    <div class="label">综合质量评分</div>
+  </div>
+  <div class="metric">
+    <div class="icon">📝</div>
+    <div class="value">41.5K</div>
+    <div class="label">输出字符数</div>
+  </div>
+</div>
+
+<!-- ====== 8-STAGE PIPELINE ====== -->
+<div class="section">
+  <h2><span class="dot"></span>8 阶段全自动生成流水线</h2>
+  <div class="pipeline">
+    <div class="pipeline-node">
+      <div class="num">1</div>
+      <div class="title">SERP 分析</div>
+      <div class="desc">意图识别<br>PAA 提取<br>长尾词挖掘</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">2</div>
+      <div class="title">内容缺口</div>
+      <div class="desc">竞品对标<br>差异化策略<br>数据采集</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">3</div>
+      <div class="title">SEO 策略</div>
+      <div class="desc">标题/Meta<br>H2-H3 结构<br>关键词规划</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">4</div>
+      <div class="title">AI 撰写</div>
+      <div class="desc">大纲驱动<br>1500-3500词<br>专业领域内容</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">5</div>
+      <div class="title">质量审计</div>
+      <div class="desc">6维评分<br>PASS/FAIL<br>质量门禁</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">6</div>
+      <div class="title">图片 SEO</div>
+      <div class="desc">Hero Image<br>Alt 文本<br>Schema 标记</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">7</div>
+      <div class="title">内链织网</div>
+      <div class="desc">知识图谱<br>Hub-Spoke<br>锚文本策略</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-node">
+      <div class="num">8</div>
+      <div class="title">多格式导出</div>
+      <div class="desc">Markdown<br>HTML + SSG<br>多语种版本</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== QUALITY SCORES ====== -->
+<div class="section">
+  <h2><span class="dot"></span>内容质量 6 维评分体系</h2>
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;">
+    <div class="score-card">
+      <div class="dim">关键词优化</div>
+      <div class="score-ring" style="background:conic-gradient(#4ade80 288deg,#1e293b 288deg);">8</div>
+      <div class="label">/10</div>
+    </div>
+    <div class="score-card">
+      <div class="dim">可读性</div>
+      <div class="score-ring" style="background:conic-gradient(#4ade80 324deg,#1e293b 324deg);">9</div>
+      <div class="label">/10</div>
+    </div>
+    <div class="score-card">
+      <div class="dim">内容深度</div>
+      <div class="score-ring" style="background:conic-gradient(#38bdf8 288deg,#1e293b 288deg);">8</div>
+      <div class="label">/10</div>
+    </div>
+    <div class="score-card">
+      <div class="dim">E-E-A-T 信号</div>
+      <div class="score-ring" style="background:conic-gradient(#38bdf8 288deg,#1e293b 288deg);">8</div>
+      <div class="label">/10</div>
+    </div>
+    <div class="score-card">
+      <div class="dim">技术 SEO</div>
+      <div class="score-ring" style="background:conic-gradient(#4ade80 324deg,#1e293b 324deg);">9</div>
+      <div class="label">/10</div>
+    </div>
+    <div class="score-card">
+      <div class="dim">内容新鲜度</div>
+      <div class="score-ring" style="background:conic-gradient(#4ade80 324deg,#1e293b 324deg);">9</div>
+      <div class="label">/10</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:24px;padding:16px;background:#0f172a;border-radius:12px;border:1px solid #334155;">
+    <span style="font-size:1.4em;font-weight:800;color:#4ade80;">综合评分: 8.4 / 10 — ✅ PASS</span>
+    <span style="display:block;color:#94a3b8;font-size:0.8em;margin-top:4px;">质量门禁: ≥7.0 通过 (6 维度加权平均)</span>
+  </div>
+</div>
+
+<!-- ====== ARCHITECTURE OVERVIEW ====== -->
+<div class="section">
+  <h2><span class="dot"></span>技术架构全景</h2>
+  <div class="arch-grid">
+    <div class="arch-box">
+      <h3>🏗️ 核心框架 & 基础设施</h3>
+      <div class="arch-item"><span class="tag">LangGraph</span> 12 节点有状态 DAG 编排引擎</div>
+      <div class="arch-item"><span class="tag">FastAPI</span> REST API + SSE 流式推送</div>
+      <div class="arch-item"><span class="tag">SQLite</span> Checkpointer 断点续传与状态持久化</div>
+      <div class="arch-item"><span class="tag">Gemini 2.5</span> Google AI 旗舰模型驱动 LLM 推理</div>
+      <div class="arch-item"><span class="tag">Next.js</span> 管理后台 + 实时监控面板</div>
+      <div class="arch-item"><span class="tag">Astro SSG</span> 静态站点生成, 博客秒级部署</div>
+    </div>
+    <div class="arch-box">
+      <h3>🔧 高级能力矩阵</h3>
+      <div class="arch-item"><span class="tag">GraphRAG</span> 知识图谱增强检索 (Neo4j + 向量检索)</div>
+      <div class="arch-item"><span class="tag">Hybrid RAG</span> 关键词 + 向量 + 知识图谱混合检索</div>
+      <div class="arch-item"><span class="tag">Plagiarism</span> Jaccard 相似度 + 知识库查重</div>
+      <div class="arch-item"><span class="tag">Multi-Lang</span> 中/英/日/韩/泰/越 10+ 语种</div>
+      <div class="arch-item"><span class="tag">Retry</span> 指数退避 + 多 Provider 自动切换</div>
+      <div class="arch-item"><span class="tag">Evals</span> 内置评估框架, 持续质量监控</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== DEMO RUN DETAILS ====== -->
+<div class="section">
+  <h2><span class="dot"></span>演示运行详情: "Best Wireless Earbuds 2024"</h2>
+  <div class="process-list">
+    <div class="process-item">
+      <div class="step-num">S1</div>
+      <div class="step-content">
+        <h4>SERP 意图分析 & 关键词挖掘</h4>
+        <p>意图识别: Commercial Investigation | PAA 问题: 5 个 (电池寿命/性价比/运动场景/降噪/购买建议) | 长尾关键词: 5 个 (budget under $100, noise cancelling office, battery life travel...) | 推荐内容类型: Listicle + Buying Guide</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <div class="step-num">S2</div>
+      <div class="step-content">
+        <h4>内容缺口分析</h4>
+        <p>竞品内容缺失: 1) 真实音频测量数据 (频响曲线/延迟测试) 2) 长期使用追踪 (电池衰减/固件更新) 3) 按用户画像分类推荐 (通勤/运动/办公) | 差异化策略: 提供客观测量 + 长期追踪 + 分场景推荐</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <div class="step-num">S3</div>
+      <div class="step-content">
+        <h4>SEO 策略 Brief</h4>
+        <p>SEO 标题: "2024 年最佳无线降噪耳机终极购买指南：专业评测与推荐" | H2: 8 个主标题 + 15+ 子标题 | 目标关键词: best wireless earbuds 2024 | Featured Snippet: 1 组问答 | 目标字数: 2000-3500 词</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <div class="step-num">S4</div>
+      <div class="step-content">
+        <h4>AI 内容撰写</h4>
+        <p>产出: 2000+ 词完整文章 | 结构: Hook 引言 → 产品对比表 (4 款) → 功能深度解析 (ANC/续航/舒适度/编解码) → 分场景购买指南 → FAQ → CTA 结尾 | 语言风格: 专业、客观、数据驱动</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <div class="step-num">S5</div>
+      <div class="step-content">
+        <h4>质量审计 (6 维评分)</h4>
+        <p>关键词优化: 8/10 | 可读性: 9/10 | 内容深度: 8/10 | E-E-A-T 信号: 8/10 | 技术 SEO: 9/10 | 内容新鲜度: 9/10 | 综合: 8.4/10 PASS ✅ | 门禁策略: 任一维度 < 6 即需人工复审</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== OUTPUT PREVIEW NOTE ====== -->
+<div class="section" style="background:linear-gradient(135deg,#0f2847,#1a365d);border-color:#2d4a7a;">
+  <h2><span class="dot"></span>📄 生成结果预览</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;">
+    <div style="background:#0f172a;border-radius:12px;padding:20px;">
+      <div style="font-size:2em;">📝</div>
+      <div style="font-size:1.2em;font-weight:700;color:#38bdf8;">Markdown</div>
+      <div style="color:#94a3b8;font-size:0.8em;">41,587 字符原始输出</div>
+    </div>
+    <div style="background:#0f172a;border-radius:12px;padding:20px;">
+      <div style="font-size:2em;">🌐</div>
+      <div style="font-size:1.2em;font-weight:700;color:#38bdf8;">Astro SSG</div>
+      <div style="color:#94a3b8;font-size:0.8em;">静态站点秒级部署</div>
+    </div>
+    <div style="background:#0f172a;border-radius:12px;padding:20px;">
+      <div style="font-size:2em;">🌍</div>
+      <div style="font-size:1.2em;font-weight:700;color:#38bdf8;">多语种</div>
+      <div style="color:#94a3b8;font-size:0.8em;">10+ 语言同步生成</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  SEO Agent Blog Generator · LangGraph 12-Node DAG Pipeline · Gemini 2.5 Flash · Production Ready · 2026-07-05
+</div>
+</div>
+</body>
+</html>
