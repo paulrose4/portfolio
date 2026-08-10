@@ -4,7 +4,7 @@ Recruiting-oriented portfolio deployed with GitHub Pages.
 
 ## Featured project
 
-- [SupportOS](https://github.com/paulrose4/obsidian-rag-support-agent): company internal AI customer-support platform for which I independently owned requirements analysis, architecture, full-stack development, deployment and maintenance. It connects about 10 multi-category commerce sites managed across 6 business workspaces.
+- [SupportOS](https://github.com/paulrose4/supportos-ai-customer-support-platform): company internal AI customer-support platform for which I independently owned requirements analysis, architecture, full-stack development, deployment and maintenance. It connects about 10 multi-category commerce sites managed across 6 business workspaces.
 - The SupportOS repository contains real business-project source code published with explicit company authorization; customer PII, secrets and private operational data remain excluded.
 - [Live product login](https://livechatgo.com/)
 - [Portfolio site](https://paulrose4.github.io/portfolio/)
