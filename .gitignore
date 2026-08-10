@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+tmp/
+coverage/
+*.bak
+screenshots/*-qa*.png
+screenshots/*viewport*.png
