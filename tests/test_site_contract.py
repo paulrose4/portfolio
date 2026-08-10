@@ -1,11 +1,54 @@
-from pathlib import Path
 import unittest
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
+class LocalReferenceParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.references: list[str] = []
+
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        attribute = "href" if tag in {"a", "link"} else "src" if tag in {
+            "img",
+            "script",
+        } else None
+        if attribute is None:
+            return
+        values = dict(attrs)
+        value = values.get(attribute)
+        if value:
+            self.references.append(value)
+
+
 class PortfolioContractTests(unittest.TestCase):
+    def test_local_pages_reference_existing_files(self) -> None:
+        root = ROOT.resolve()
+
+        for page in ROOT.glob("*.html"):
+            parser = LocalReferenceParser()
+            parser.feed(page.read_text(encoding="utf-8"))
+
+            for reference in parser.references:
+                parsed = urlsplit(reference)
+                if parsed.scheme or parsed.netloc or not parsed.path:
+                    continue
+                target = (page.parent / parsed.path).resolve()
+                self.assertTrue(
+                    target.is_relative_to(root),
+                    f"{page.name} references a path outside the site: {reference}",
+                )
+                self.assertTrue(
+                    target.exists(),
+                    f"{page.name} references a missing file: {reference}",
+                )
+
     def test_omnisell_uses_current_repository_and_architecture(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
         case_study = (ROOT / "omnisell-case-study.html").read_text(encoding="utf-8")
