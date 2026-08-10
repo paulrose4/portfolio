@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SupportOS 多租户 AI 客服平台完整项目案例：架构、LangGraph、RAG、权限、安全、评测与生产边界。">
+  <title>SupportOS 项目案例 | AI Agent Engineering</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css?v=20260810">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">AI</span>
+      <span>Agent Engineering</span>
+    </a>
+    <nav class="site-nav" aria-label="案例导航">
+      <a href="#architecture">架构</a>
+      <a href="#decisions">技术取舍</a>
+      <a href="#quality">质量证据</a>
+      <a href="index.html">返回作品集</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="case-hero">
+      <div>
+        <p class="eyebrow">Internal Business AI Agent Case Study</p>
+        <h1>SupportOS</h1>
+        <p class="case-hero-subtitle">企业内部多站点 AI 客服与 Agent 运营平台</p>
+        <p class="case-hero-lead">
+          公司内部核心项目，由我独立负责需求分析、架构设计、全栈开发、部署与持续维护，工程仓库经公司明确授权公开。模型负责理解和表达；身份、租户、权限、风险、事实来源、知识发布、引用和人工接管由确定性代码负责。
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://livechatgo.com/" target="_blank" rel="noreferrer">线上产品界面</a>
+          <a class="button case-button" href="https://github.com/paulrose4/obsidian-rag-support-agent" target="_blank" rel="noreferrer">工程仓库</a>
+          <a class="button case-button" href="https://github.com/paulrose4/obsidian-rag-support-agent/blob/main/docs/recruiting-case-study.zh-CN.md" target="_blank" rel="noreferrer">技术证据</a>
+        </div>
+      </div>
+      <figure class="case-hero-shot">
+        <img src="screenshots/supportos-live-dashboard.png" alt="SupportOS 客服运营工作台">
+        <figcaption>公开截图已脱敏，不含敏感垂直业务内容、客户 PII 或私有运营数据。</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-facts" aria-label="项目事实">
+      <div><span>业务覆盖</span><strong>约 10 个多品类独立站</strong></div>
+      <div><span>管理边界</span><strong>6 个真实业务工作区</strong></div>
+      <div><span>内部用户</span><strong>客服 · 运营</strong></div>
+      <div><span>负责范围</span><strong>个人独立负责全流程</strong></div>
+    </section>
+
+    <section class="case-section" id="architecture">
+      <p class="eyebrow">Architecture</p>
+      <h2>系统不是一条 RAG 调用链</h2>
+      <p class="section-lead">
+        SupportOS 将访客渠道、Agent 运行时、精确业务事实、语义知识和人工运营拆成独立边界。图节点和 API
+        只能调用应用服务，不能直接访问 Repository 或供应商 SDK。
+      </p>
+
+      <div class="architecture-flow" aria-label="SupportOS 系统架构流程">
+        <div class="architecture-stage channel"><span>01</span><strong>Visitor Channels</strong><small>Widget · WordPress · Static Connector</small></div>
+        <div class="architecture-arrow" aria-hidden="true">→</div>
+        <div class="architecture-stage api"><span>02</span><strong>Trusted API</strong><small>FastAPI · Auth · Tenant Context</small></div>
+        <div class="architecture-arrow" aria-hidden="true">→</div>
+        <div class="architecture-stage agent"><span>03</span><strong>Agent Runtime</strong><small>LangGraph · Rules · Validation</small></div>
+        <div class="architecture-arrow" aria-hidden="true">→</div>
+        <div class="architecture-stage human"><span>04</span><strong>Human Operations</strong><small>Inbox · Ticket · SLA · Audit</small></div>
+      </div>
+
+      <div class="data-boundaries">
+        <article>
+          <span class="data-label sql">PostgreSQL</span>
+          <h3>决定精确事实</h3>
+          <p>商品身份、SKU、价格、库存、规格、租户权限、会话与人工工单。</p>
+        </article>
+        <article>
+          <span class="data-label vector">Qdrant</span>
+          <h3>提供解释性知识</h3>
+          <p>FAQ、政策、商品说明和使用指南，强制租户、站点、语言和发布状态过滤。</p>
+        </article>
+        <article>
+          <span class="data-label cache">Redis</span>
+          <h3>承担共享运行状态</h3>
+          <p>实时事件与需要跨请求共享的有界状态，PostgreSQL 仍是耐久业务事实来源。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section case-section-alt" id="decisions">
+      <p class="eyebrow">Engineering Decisions</p>
+      <h2>四个最重要的技术判断</h2>
+      <div class="decision-list">
+        <article><span>01</span><div><h3>风险规则在模型前执行</h3><p>订单、退款、支付和高风险场景在任何模型或工具调用前分流，模型不能降低风险等级。</p></div></article>
+        <article><span>02</span><div><h3>生成结果必须重新验证</h3><p>校验数字、引用、PII、跨租户信息、业务承诺与 SOP 步骤，最多修复一次，仍失败则人工接管。</p></div></article>
+        <article><span>03</span><div><h3>知识采用暂存发布</h3><p>新版本写入非活动集合，完成 Manifest、商品快照和向量点核对后再切换，失败保留旧版本。</p></div></article>
+        <article><span>04</span><div><h3>人工接管是业务状态</h3><p>接管、分配、回复、备注和解决均持久化与审计，AI 不会因为新消息自动抢回已接管会话。</p></div></article>
+      </div>
+    </section>
+
+    <section class="case-section access-section" id="access-control">
+      <p class="eyebrow">Controlled Onboarding</p>
+      <h2>企业内部平台采用邀请制准入</h2>
+      <p class="section-lead">
+        平台管理员向指定企业邮箱签发一次性开通链接，并配置有效期与站点额度。服务端负责创建工作区和 tenant owner，
+        邀请支持过期、撤销、防重放和审计；工作区 Owner 再邀请客服或运营成员加入已有工作区。
+      </p>
+      <figure class="access-shot">
+        <img src="screenshots/supportos-invite-onboarding.png" alt="SupportOS 企业工作区邀请码开通界面">
+        <figcaption>公开展示已脱敏：管理员为企业邮箱生成一次性工作区注册链接。</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-section" id="quality">
+      <p class="eyebrow">Quality & Evaluation</p>
+      <h2>用测试和评测证明边界</h2>
+      <div class="quality-grid">
+        <article><strong>751</strong><span>Python 测试通过</span><p>默认环境下的单元、契约与应用层测试。</p></article>
+        <article><strong>30/30</strong><span>Dashboard 测试</span><p>Vitest 测试和 TypeScript/Vite 构建均进入 CI。</p></article>
+        <article><strong>30/30</strong><span>固定离线回归</span><p>覆盖引用、拒答、风险升级、业务承诺和跨租户安全。</p></article>
+        <article><strong>6/6</strong><span>架构契约</span><p>阻止核心层导入 Web、ORM、向量库或供应商 SDK。</p></article>
+      </div>
+
+      <aside class="case-caution">
+        <strong>公开边界</strong>
+        <p>另有 55 项 PostgreSQL、Qdrant、Redis 集成用例在目标环境执行。Recall@10、真实模型输出、P95 延迟、自动解决率和 CSAT 只有生成绑定当前 commit、数据集与环境的新报告后才会作为公开成果。</p>
+      </aside>
+    </section>
+
+    <section class="case-section case-outcome">
+      <p class="eyebrow">What This Project Demonstrates</p>
+      <h2>从模型调用者到 Agent 系统工程师</h2>
+      <p>
+        这个项目展示的不是框架数量，而是如何把不确定模型放入清晰的软件边界：可信身份、最小权限、
+        权威数据、可恢复发布、有限状态、确定性验证、人工兜底和可复现质量门禁。
+      </p>
+      <a class="text-link" href="index.html">返回完整作品集</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>SupportOS Case Study</span>
+    <span><a href="mailto:1513582348@qq.com">1513582348@qq.com</a></span>
+  </footer>
+</body>
+</html>
