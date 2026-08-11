@@ -86,6 +86,24 @@ class PortfolioContractTests(unittest.TestCase):
         ):
             self.assertIn(section, case_study)
 
+    def test_supportos_has_role_timeline_and_public_provenance(self) -> None:
+        index = (ROOT / "index.html").read_text(encoding="utf-8")
+        case_study = (ROOT / "supportos-case-study.html").read_text(
+            encoding="utf-8"
+        )
+
+        for claim in (
+            "2026 年 7 月中旬",
+            "独立承担端到端工程交付",
+            "需求分析与业务建模",
+            "公开提交从安全审计后的代码快照开始",
+            "public-release-provenance.zh-CN.md",
+        ):
+            self.assertIn(claim, index + case_study)
+
+        self.assertNotIn("纯个人项目", index + case_study)
+        self.assertNotIn("知识产权全部属于我", index + case_study)
+
 
 if __name__ == "__main__":
     unittest.main()

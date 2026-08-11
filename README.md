@@ -4,8 +4,8 @@ Recruiting-oriented portfolio deployed with GitHub Pages.
 
 ## Featured project
 
-- [SupportOS](https://github.com/paulrose4/supportos-ai-customer-support-platform): company internal AI customer-support platform for which I independently owned requirements analysis, architecture, full-stack development, deployment and maintenance. It connects about 10 multi-category commerce sites managed across 6 business workspaces.
-- The SupportOS repository contains real business-project source code published with explicit company authorization; customer PII, secrets and private operational data remain excluded.
+- [SupportOS](https://github.com/paulrose4/supportos-ai-customer-support-platform): company internal AI customer-support platform started in mid-July 2026. I independently owned requirements analysis, product modeling, architecture, Agent/RAG, full-stack implementation, testing, deployment and iterative maintenance. It connects about 10 multi-category commerce sites managed across 6 business workspaces.
+- The SupportOS repository contains real business-project source code published with explicit company authorization. Its public history starts from a security-reviewed snapshot because customer PII, internal configuration, operational material and personal files remain private.
 - [Live product login](https://livechatgo.com/)
 - [Portfolio site](https://paulrose4.github.io/portfolio/)
 
