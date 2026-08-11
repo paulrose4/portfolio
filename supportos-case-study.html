@@ -18,9 +18,11 @@
       <span>Agent Engineering</span>
     </a>
     <nav class="site-nav" aria-label="案例导航">
+      <a href="#responsibility">我的职责</a>
       <a href="#architecture">架构</a>
       <a href="#decisions">技术取舍</a>
       <a href="#quality">质量证据</a>
+      <a href="#provenance">发布说明</a>
       <a href="index.html">返回作品集</a>
     </nav>
   </header>
@@ -32,7 +34,7 @@
         <h1>SupportOS</h1>
         <p class="case-hero-subtitle">企业内部多站点 AI 客服与 Agent 运营平台</p>
         <p class="case-hero-lead">
-          公司内部核心项目，由我独立负责需求分析、架构设计、全栈开发、部署与持续维护，工程仓库经公司明确授权公开。模型负责理解和表达；身份、租户、权限、风险、事实来源、知识发布、引用和人工接管由确定性代码负责。
+          2026 年 7 月中旬启动的公司内部核心项目。由我独立负责需求分析、产品建模、架构设计、Agent/RAG、全栈开发、测试、部署上线与迭代维护，工程仓库经公司明确授权公开。模型负责理解和表达；身份、租户、权限、风险、事实来源、知识发布、引用和人工接管由确定性代码负责。
         </p>
         <div class="hero-actions">
           <a class="button button-primary" href="https://livechatgo.com/" target="_blank" rel="noreferrer">线上产品界面</a>
@@ -50,7 +52,24 @@
       <div><span>业务覆盖</span><strong>约 10 个多品类独立站</strong></div>
       <div><span>管理边界</span><strong>6 个真实业务工作区</strong></div>
       <div><span>内部用户</span><strong>客服 · 运营</strong></div>
-      <div><span>负责范围</span><strong>个人独立负责全流程</strong></div>
+      <div><span>项目周期</span><strong>2026.07 - 2026.08</strong></div>
+    </section>
+
+    <section class="case-section case-section-alt responsibility-section" id="responsibility">
+      <p class="eyebrow">Role & Ownership</p>
+      <h2>独立承担端到端工程交付</h2>
+      <p class="section-lead">
+        客服和运营人员提供业务规则、使用反馈与验收输入；我独立负责需求拆解、系统设计、
+        Agent/RAG 与全栈实现、测试、部署上线和持续维护。
+      </p>
+      <dl class="responsibility-list">
+        <div><dt>需求分析与业务建模</dt><dd>梳理访客咨询、知识发布、风险升级、人工接管和运营管理流程，并结合客服与运营反馈迭代。</dd></div>
+        <div><dt>Agent 与 RAG</dt><dd>设计 LangGraph 状态流程、确定性风险规则、混合检索、受约束生成、输出验证与人工升级。</dd></div>
+        <div><dt>Python 后端与数据架构</dt><dd>实现 FastAPI 应用服务、PostgreSQL 权威事实、Qdrant 解释性知识、Redis 共享状态和多租户隔离。</dd></div>
+        <div><dt>React 工作台与站点接入</dt><dd>实现客服运营工作台、公开 Widget、WordPress 插件与静态/PHP 连接器。</dd></div>
+        <div><dt>测试、CI 与评测</dt><dd>建设 pytest、Vitest、架构契约、离线输出合同评测、迁移校验和 GitHub Actions 门禁。</dd></div>
+        <div><dt>部署上线与维护</dt><dd>负责 Docker Compose、Caddy、数据库迁移、备份恢复、生产配置校验及线上问题处理。</dd></div>
+      </dl>
     </section>
 
     <section class="case-section" id="architecture">
@@ -127,6 +146,19 @@
       <aside class="case-caution">
         <strong>公开边界</strong>
         <p>另有 55 项 PostgreSQL、Qdrant、Redis 集成用例在目标环境执行。Recall@10、真实模型输出、P95 延迟、自动解决率和 CSAT 只有生成绑定当前 commit、数据集与环境的新报告后才会作为公开成果。</p>
+      </aside>
+    </section>
+
+    <section class="case-section case-section-alt" id="provenance">
+      <p class="eyebrow">Public Release Provenance</p>
+      <h2>公开提交从安全审计后的代码快照开始</h2>
+      <p class="section-lead">
+        原始开发历史包含内部配置、运营材料、早期原始评测结果和个人文件。获得公司源码公开授权后，
+        我没有伪造或人为拆分历史提交，而是移除敏感内容、替换合成演示数据、重新执行质量门禁，并建立独立公开仓库。
+      </p>
+      <aside class="case-caution provenance-note">
+        <strong>如何理解提交数量</strong>
+        <p>公开仓库记录的是 2026 年 8 月完成安全审计后的公开演进，不代表从 2026 年 7 月中旬开始的完整内部开发周期。完整说明见 <a href="https://github.com/paulrose4/supportos-ai-customer-support-platform/blob/main/docs/public-release-provenance.zh-CN.md" target="_blank" rel="noreferrer">项目溯源与公开边界</a>。</p>
       </aside>
     </section>
 

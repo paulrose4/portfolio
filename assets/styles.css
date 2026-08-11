@@ -653,6 +653,34 @@ img {
   border-bottom: 1px solid var(--line);
 }
 
+.responsibility-list {
+  margin: 46px 0 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.responsibility-list div {
+  display: grid;
+  grid-template-columns: minmax(210px, 0.42fr) minmax(0, 1.58fr);
+  gap: 30px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.responsibility-list dt {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.responsibility-list dd {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.provenance-note a {
+  color: var(--green);
+  font-weight: 700;
+}
+
 .access-section {
   padding-top: 72px;
 }
@@ -845,6 +873,11 @@ img {
   .case-facts,
   .quality-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .responsibility-list div {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .case-facts div:nth-child(2) {
